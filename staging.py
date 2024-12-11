@@ -1,8 +1,10 @@
-# staging.py
-
 import os
 import logging
 import hashlib
+from rich.console import Console
+
+# Initialize rich console for styled output
+console = Console()
 
 # Configure logging
 logging.basicConfig(
@@ -16,7 +18,7 @@ def stage_file(file_path):
     Stage a file by adding it to the .myscs/index file.
     """
     if not os.path.exists(file_path):
-        print("File not found in the working directory.")
+        console.print(f"[bold red]Error:[/bold red] File '{file_path}' not found in the working directory.")
         logging.warning(f"File {file_path} not found.")
         return
 
@@ -28,14 +30,18 @@ def stage_file(file_path):
                 hasher.update(chunk)
         file_hash = hasher.hexdigest()
 
+        # Ensure the .myscs directory exists
+        if not os.path.exists(".myscs"):
+            os.mkdir(".myscs")
+
         # Add the file path and hash to the index
         index_path = ".myscs/index"
         with open(index_path, 'a') as index_file:
             index_file.write(f"{file_path} {file_hash}\n")
 
-        print("File staged successfully.")
+        console.print(f"[bold green]Success:[/bold green] File '{file_path}' staged successfully.")
         logging.info(f"File {file_path} added to the index with hash {file_hash}.")
 
     except Exception as e:
-        print(f"Error staging the file. Details: {str(e)}")
+        console.print(f"[bold red]Error:[/bold red] Staging file '{file_path}' failed. Details: {str(e)}")
         logging.error(f"Error staging the file {file_path}: {str(e)}")
