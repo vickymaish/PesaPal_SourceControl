@@ -16,3 +16,8 @@ venv/
 # Ignore other unnecessary files
 *.DS_Store
 .env
+
+#myscs pseudocode.py
+Pesapal_Clone/
+
+testheadparsing.py
